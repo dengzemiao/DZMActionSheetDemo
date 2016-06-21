@@ -77,6 +77,22 @@
 }
 
 /**
+ *  显示一个类似系统的ActionSheet (上下都可以放置多个按钮)
+ *
+ *  @param dicts    字典数组 @[@{"title" : @(SPActionSheetTitleColorType)}] 类似系统控件的 取消跟其他按钮是分开的 top为上面部分
+ *  @param dicts    字典数组 @[@{"title" : @(SPActionSheetTitleColorType)}] 类似系统控件的 取消跟其他按钮是分开的 bottom为下面部分
+ *  @param operation 操作
+ */
++ (void)actionSheetWithTopDicts:(NSArray *)topDicts bottomDicts:(NSArray *)bottomDicts operation:(ASOperation)operation
+{
+    DZMActionSheet *actionSheet = [DZMActionSheet actionSheet];
+    
+    [actionSheet showWindowWithTopDicts:topDicts bottomDicts:bottomDicts];
+    
+    actionSheet.operation = operation;
+}
+
+/**
  *  显示window
  */
 - (void)showWindowWithTopDicts:(NSArray *)topDicts bottomDicts:(NSArray *)bottomDicts
@@ -204,8 +220,12 @@
 
 - (void)clickCustomBtn:(UIButton *)customBtn
 {
-    if ([self.delegate respondsToSelector:@selector(actionSheet:clickedButtonAtIndex:)]) {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheet:clickedButtonAtIndex:)]) {
         [self.delegate actionSheet:self clickedButtonAtIndex:customBtn.tag];
+    }
+    
+    if (self.operation) {
+        self.operation(customBtn.tag);
     }
     
     [self coverBtnClick];
@@ -242,7 +262,8 @@
  */
 - (void)hiddenWindow
 {
-    
+    self.delegate = nil;
+    self.operation = nil;
     self.myWindow.hidden = YES;
 }
 
