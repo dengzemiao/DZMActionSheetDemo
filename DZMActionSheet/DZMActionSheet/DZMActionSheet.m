@@ -262,9 +262,9 @@
  */
 - (void)hiddenWindow
 {
+    self.myWindow.hidden = YES;
     self.delegate = nil;
     self.operation = nil;
-    self.myWindow.hidden = YES;
 }
 
 /**
